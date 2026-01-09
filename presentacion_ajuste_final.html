@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Formación | Ajuste final de estructura</title>
+  <style>
+    :root{
+      --bg:#070A12;
+      --panel:#0B1020;
+      --text:#F2F4F8;
+      --muted:rgba(242,244,248,.72);
+      --hair:rgba(242,244,248,.10);
+      --accent:#D7B56D; /* oro suave, muy discreto */
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius:24px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--text);
+      background:radial-gradient(1200px 700px at 12% 10%, rgba(215,181,109,.12), transparent 55%),
+                 radial-gradient(900px 500px at 88% 22%, rgba(110,200,255,.08), transparent 60%),
+                 radial-gradient(900px 700px at 70% 92%, rgba(138,255,206,.06), transparent 55%),
+                 var(--bg);
+      overflow:hidden;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    /* Deck */
+    .deck{
+      position:relative;
+      height:100%;
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:26px;
+    }
+
+    /* Frame */
+    .frame{
+      position:relative;
+      width:min(1180px, 96vw);
+      height:min(680px, 88vh);
+      border:1px solid var(--hair);
+      border-radius:28px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      isolation:isolate;
+    }
+
+    /* Subtle noise */
+    .frame::before{
+      content:"";
+      position:absolute; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay;
+      opacity:.18;
+      pointer-events:none;
+    }
+
+    /* Header brand */
+    .brand{
+      position:absolute; top:18px; left:20px;
+      display:flex; gap:10px; align-items:center;
+      z-index:30;
+      color:var(--muted);
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+    .brand .mark{
+      width:10px;height:10px;border-radius:999px;
+      background:var(--accent);
+      box-shadow:0 0 0 6px rgba(215,181,109,.10);
+    }
+    .brand .sep{opacity:.35}
+    .brand .right{opacity:.9}
+
+    /* Footer nav */
+    .hud{
+      position:absolute; left:20px; right:20px; bottom:16px;
+      display:flex; align-items:center; justify-content:space-between;
+      z-index:30;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .progress{
+      display:flex; align-items:center; gap:10px;
+      min-width:180px;
+    }
+    .bar{
+      width:140px; height:2px; background:rgba(242,244,248,.12);
+      border-radius:999px; overflow:hidden;
+    }
+    .bar > i{
+      display:block; height:100%; width:0%;
+      background:var(--accent);
+      border-radius:999px;
+      transition:width 420ms ease;
+    }
+    .dots{display:flex; gap:7px; align-items:center}
+    .dot{
+      width:6px;height:6px;border-radius:999px;
+      background:rgba(242,244,248,.22);
+      transition:transform 220ms ease, background 220ms ease;
+      cursor:pointer;
+    }
+    .dot.active{
+      background:var(--accent);
+      transform:scale(1.25);
+    }
+    .hint{opacity:.65}
+    .hint kbd{
+      font:inherit;
+      padding:.12rem .38rem;
+      border:1px solid rgba(242,244,248,.20);
+      border-bottom-color:rgba(242,244,248,.10);
+      border-radius:8px;
+      background:rgba(0,0,0,.18);
+      margin:0 .12rem;
+    }
+
+    /* Slides */
+    .slides{
+      position:absolute; inset:0;
+      display:flex;
+      transition:transform 520ms cubic-bezier(.2,.9,.2,1);
+    }
+    section{
+      flex:0 0 100%;
+      height:100%;
+      padding:64px 70px 56px 70px;
+      display:grid;
+      grid-template-columns: 1.2fr .9fr;
+      gap:46px;
+      align-items:center;
+    }
+
+    /* Typography */
+    h1,h2{margin:0}
+    h1{
+      font-size:clamp(34px, 3.2vw, 52px);
+      line-height:1.04;
+      letter-spacing:-.02em;
+    }
+    h2{
+      font-size:clamp(22px, 2.1vw, 30px);
+      line-height:1.12;
+      letter-spacing:-.01em;
+    }
+    p{
+      margin:14px 0 0 0;
+      color:var(--muted);
+      font-size:clamp(14px, 1.2vw, 16px);
+      line-height:1.45;
+      max-width:56ch;
+    }
+    .lead{margin-top:18px;font-size:clamp(15px, 1.25vw, 17px)}
+    .accent{color:var(--accent)}
+    .tag{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 14px;
+      border:1px solid var(--hair);
+      border-radius:999px;
+      background:rgba(0,0,0,.14);
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      width:fit-content;
+    }
+    .tag i{
+      width:6px;height:6px;border-radius:999px;background:var(--accent);
+      box-shadow:0 0 0 6px rgba(215,181,109,.10);
+      display:inline-block;
+    }
+
+    /* Lists */
+    ul{margin:16px 0 0 0; padding-left:18px; color:var(--muted)}
+    li{margin:8px 0; line-height:1.35}
+    .bullets{margin-top:18px}
+    .bullets li{margin:10px 0}
+
+    /* Cards */
+    .card{
+      border:1px solid var(--hair);
+      border-radius:var(--radius);
+      background:rgba(0,0,0,.16);
+      padding:18px 18px 16px 18px;
+    }
+    .card + .card{margin-top:12px}
+    .card .k{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(242,244,248,.58);
+      margin-bottom:8px;
+    }
+    .card .v{
+      font-size:16px;
+      color:rgba(242,244,248,.90);
+      line-height:1.25;
+    }
+
+    /* Visuals */
+    .visual{
+      border-radius:28px;
+      border:1px solid var(--hair);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      height:420px;
+      box-shadow:0 10px 40px rgba(0,0,0,.35);
+      position:relative;
+      overflow:hidden;
+    }
+    .visual .label{
+      position:absolute; left:18px; bottom:16px;
+      font-size:12px; color:rgba(242,244,248,.62);
+      letter-spacing:.08em; text-transform:uppercase;
+      display:flex; gap:10px; align-items:center;
+    }
+    .visual .label .line{
+      width:24px; height:1px; background:rgba(242,244,248,.18);
+    }
+    .visual svg{position:absolute; inset:-20px; width:calc(100% + 40px); height:calc(100% + 40px); opacity:.95}
+    .visual .glow{
+      position:absolute; inset:-60px;
+      background:radial-gradient(420px 260px at 25% 25%, rgba(215,181,109,.22), transparent 60%),
+                 radial-gradient(420px 260px at 80% 45%, rgba(110,200,255,.14), transparent 62%),
+                 radial-gradient(520px 320px at 55% 85%, rgba(138,255,206,.12), transparent 62%);
+      filter: blur(10px);
+      opacity:.85;
+      pointer-events:none;
+    }
+
+    /* Slide variants */
+    .onecol{grid-template-columns: 1fr}
+    .center{
+      align-items:center;
+      text-align:left;
+    }
+
+    /* Small screens */
+    @media (max-width: 980px){
+      section{grid-template-columns:1fr; padding:56px 46px 54px}
+      .visual{height:240px}
+      .progress{min-width:auto}
+      .bar{width:110px}
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="frame" id="frame">
+      <!-- Marca solo en portada y cierre (se activa por JS) -->
+      <div class="brand" id="brand" style="opacity:0; transition:opacity 260ms ease;">
+        <span class="mark"></span>
+        <span>COMMUN</span>
+        <span class="sep">/</span>
+        <span class="right">Formación operativa</span>
+      </div>
+
+      <div class="slides" id="slides">
+
+        <!-- Slide 1 -->
+        <section class="onecol center" data-brand="on">
+          <div>
+            <div class="tag"><i></i> Ajuste final de la estructura</div>
+            <h1 style="margin-top:16px">
+              Decidir y comunicar<br>
+              con <span class="accent">claridad</span> cuando<br>
+              la presión sube.
+            </h1>
+            <p class="lead">
+              La formación se mantiene en lo esencial: no entra en procedimientos técnicos. Ajusta el orden y el foco para
+              entrenar decisión, comunicación operativa y sostenimiento de la actuación en escenarios exigentes.
+            </p>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:24px; max-width:860px">
+              <div class="card">
+                <div class="k">Qué entrenamos</div>
+                <div class="v">Criterios, lenguaje y marcos de decisión transferibles</div>
+              </div>
+              <div class="card">
+                <div class="k">Cómo</div>
+                <div class="v">Experiencia → conversación guiada → sistematización operativa</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 2 -->
+        <section>
+          <div>
+            <div class="tag"><i></i> Enfoque</div>
+            <h2 style="margin-top:14px">Un entrenamiento progresivo y muy operativo</h2>
+            <p>
+              Partimos de situaciones habituales y reconocibles. Introducimos, de forma controlada, las tensiones reales:
+              incertidumbre inicial, presión temporal, coordinación a distancia y multiplicidad de interlocutores.
+            </p>
+            <ul class="bullets">
+              <li><strong>Ordenar</strong> la mente en los primeros minutos.</li>
+              <li><strong>Transmitir</strong> decisiones con claridad y verificación real.</li>
+              <li><strong>Sostener</strong> coherencia y criterio cuando la carga aumenta.</li>
+            </ul>
+          </div>
+
+          <div class="visual" aria-hidden="true">
+            <div class="glow"></div>
+            <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="rgba(242,244,248,.18)"/>
+                  <stop offset="1" stop-color="rgba(242,244,248,0)"/>
+                </linearGradient>
+                <filter id="blur20"><feGaussianBlur stdDeviation="18"/></filter>
+              </defs>
+              <path d="M80,520 C210,410 310,460 430,360 C560,260 650,280 820,140" fill="none" stroke="rgba(215,181,109,.55)" stroke-width="2.4"/>
+              <circle cx="250" cy="220" r="120" fill="rgba(110,200,255,.18)" filter="url(#blur20)"/>
+              <circle cx="620" cy="300" r="160" fill="rgba(138,255,206,.16)" filter="url(#blur20)"/>
+              <rect x="0" y="0" width="900" height="600" fill="url(#g1)"/>
+              <g opacity=".55">
+                <rect x="130" y="160" width="220" height="10" rx="5" fill="rgba(242,244,248,.20)"/>
+                <rect x="130" y="190" width="320" height="10" rx="5" fill="rgba(242,244,248,.14)"/>
+                <rect x="130" y="220" width="260" height="10" rx="5" fill="rgba(242,244,248,.12)"/>
+                <rect x="130" y="260" width="360" height="10" rx="5" fill="rgba(242,244,248,.10)"/>
+              </g>
+            </svg>
+            <div class="label"><span class="line"></span> De lo habitual a lo exigente</div>
+          </div>
+        </section>
+
+        <!-- Slide 3 -->
+        <section>
+          <div>
+            <div class="tag"><i></i> Estructura</div>
+            <h2 style="margin-top:14px">Tres sesiones. Un mismo esquema.</h2>
+            <p>
+              En cada sesión repetimos un patrón simple para fijar criterios y lenguaje común sin burocracia:
+            </p>
+
+            <div style="margin-top:18px">
+              <div class="card">
+                <div class="k">1 · Experiencia</div>
+                <div class="v">Dinámica breve que reproduce tensión real (controlada).</div>
+              </div>
+              <div class="card">
+                <div class="k">2 · Conversación guiada</div>
+                <div class="v">Qué vimos, qué decidimos, qué información faltaba y por qué.</div>
+              </div>
+              <div class="card">
+                <div class="k">3 · Cierre operativo</div>
+                <div class="v">Criterios transferibles al día a día (lenguaje + señales + prioridades).</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="visual" aria-hidden="true">
+            <div class="glow"></div>
+            <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="blur24"><feGaussianBlur stdDeviation="22"/></filter>
+              </defs>
+              <circle cx="240" cy="220" r="150" fill="rgba(215,181,109,.22)" filter="url(#blur24)"/>
+              <circle cx="640" cy="210" r="130" fill="rgba(110,200,255,.16)" filter="url(#blur24)"/>
+              <circle cx="520" cy="420" r="170" fill="rgba(138,255,206,.14)" filter="url(#blur24)"/>
+              <g opacity=".65">
+                <rect x="150" y="160" width="600" height="110" rx="18" fill="rgba(0,0,0,.18)" stroke="rgba(242,244,248,.14)"/>
+                <rect x="190" y="200" width="520" height="12" rx="6" fill="rgba(242,244,248,.18)"/>
+                <rect x="190" y="230" width="360" height="12" rx="6" fill="rgba(242,244,248,.12)"/>
+                <rect x="150" y="310" width="600" height="110" rx="18" fill="rgba(0,0,0,.14)" stroke="rgba(242,244,248,.10)"/>
+                <rect x="190" y="350" width="460" height="12" rx="6" fill="rgba(242,244,248,.16)"/>
+                <rect x="190" y="380" width="300" height="12" rx="6" fill="rgba(242,244,248,.10)"/>
+              </g>
+            </svg>
+            <div class="label"><span class="line"></span> Patrón simple, repetible</div>
+          </div>
+        </section>
+
+        <!-- Slide 4 -->
+        <section>
+          <div>
+            <div class="tag"><i></i> Sesión 1</div>
+            <h2 style="margin-top:14px">Ordenar el inicio y la toma de decisiones</h2>
+            <p>
+              Entrenamos los primeros minutos: información incompleta, variables abiertas y necesidad de avanzar sin forzar certezas.
+            </p>
+            <ul class="bullets">
+              <li>Diferenciar fases: <strong>análisis</strong> → <strong>verificación</strong> → <strong>decisión provisional</strong>.</li>
+              <li>Separar lo <strong>relevante</strong> de lo accesorio para desbloquear la actuación.</li>
+              <li>Evitar dos extremos: <strong>precipitación</strong> y <strong>parálisis</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="visual" aria-hidden="true">
+            <div class="glow"></div>
+            <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="b"><feGaussianBlur stdDeviation="10"/></filter>
+              </defs>
+              <g opacity=".75">
+                <rect x="120" y="150" width="660" height="320" rx="26" fill="rgba(0,0,0,.18)" stroke="rgba(242,244,248,.14)"/>
+                <rect x="170" y="205" width="250" height="18" rx="9" fill="rgba(242,244,248,.18)"/>
+                <rect x="170" y="245" width="420" height="12" rx="6" fill="rgba(242,244,248,.12)"/>
+                <rect x="170" y="270" width="380" height="12" rx="6" fill="rgba(242,244,248,.10)"/>
+                <rect x="170" y="320" width="520" height="54" rx="14" fill="rgba(215,181,109,.12)" stroke="rgba(215,181,109,.35)"/>
+                <circle cx="710" cy="226" r="26" fill="rgba(110,200,255,.20)" filter="url(#b)"/>
+              </g>
+              <path d="M155,420 C260,380 320,410 420,360 C520,310 610,330 760,230" fill="none" stroke="rgba(242,244,248,.18)" stroke-width="2"/>
+            </svg>
+            <div class="label"><span class="line"></span> Primeros minutos</div>
+          </div>
+        </section>
+
+        <!-- Slide 5 -->
+        <section>
+          <div>
+            <div class="tag"><i></i> Sesión 2</div>
+            <h2 style="margin-top:14px">Comunicación operativa y coordinación a distancia</h2>
+            <p>
+              Realidad del trabajo por teléfono y ordenador: decisiones que deben ser claras, coherentes y resistentes a la presión.
+            </p>
+            <ul class="bullets">
+              <li>Estructura de mensajes que <strong>reduce malentendidos</strong> y pérdidas de información.</li>
+              <li>Verificación eficaz: comprobar comprensión sin alargar ni generar fricción.</li>
+              <li>Sostener al técnico en campo: <strong>marcar límites</strong>, reconducir y alinear sin añadir tensión.</li>
+            </ul>
+          </div>
+
+          <div class="visual" aria-hidden="true">
+            <div class="glow"></div>
+            <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">... (truncated for brevity)
